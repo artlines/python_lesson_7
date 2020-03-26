@@ -1,11 +1,12 @@
 import time
-from file_generator import csv, json, doc
+import traceback
+from file_generator import format_csv, format_json, format_docx
 
-car_data = {'mark': 'Volvo', 'engine': 1.5, 'year': 2017}
-start_time = time.time()
-formats = ['csv', 'json', 'doc']
-create_function = 'create'
 filepath = 'files'
+start_time = time.time()
+create_function = 'create'
+formats = ['csv', 'json', 'docx']
+car_data = {'mark': 'Volvo', 'engine': 1.5, 'year': 2017}
 
 
 def get_filename(folder, format):
@@ -15,9 +16,10 @@ def get_filename(folder, format):
 for format in formats:
     try:
         filename = get_filename(filepath, format)
-        function = getattr(locals().get(format), create_function)
+        module = f"format_{format}"
+        function = getattr(locals().get(module), create_function)
         function(filename, car_data)
-    except Exception as e:
-        print(e)
+    except Exception:
+        print(traceback.format_exc())
     else:
         print(f"Функция генерации {format} длится %s секунд" % (time.time() - start_time))
